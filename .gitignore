@@ -1,2 +1,3 @@
-/LLM/models/*
-/LLM/resources_/*
+*.pdf
+*.gguf
+*.pkl
