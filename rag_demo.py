@@ -12,7 +12,12 @@ def Prompt(query):
     return prompt
 
 model_path="./models/minicpm3-4b-q4_k_m.gguf"
-llm = LlamaCpp(model_path=model_path, n_ctx=2048, temperature=0.7, stop=["Q:", "question:", "Question:", "Unhelpful Answer:", "</s>"]) # n_ctx: 输入的token最大长度
+llm = LlamaCpp(model_path=model_path, 
+               n_ctx=2048, # n_ctx: 输入的token最大长度
+               temperature=0.7, 
+               stop=["Q:", "question:", "Question:", "Unhelpful Answer:", "Unfriendly Answer:", "</s>"], # 生成停止标志
+               n_gpu_layers=1, # 部署在GPU上的层数，需要在安装llama-cpp-python时指定编译参数支持GPU
+               ) 
 retriever = vector_store.as_retriever()
 
 # QA式检索
