@@ -1,3 +1,4 @@
 *.pdf
 *.gguf
 *.pkl
+*.safetensors

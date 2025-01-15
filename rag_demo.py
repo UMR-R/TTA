@@ -3,7 +3,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import LlamaCpp
 from langchain.chains import RetrievalQA, ConversationalRetrievalChain
 
-with open("./resources_/SoftEngineer.pkl", "rb") as f:
+with open("./_resources/docs/SoftEngineer.pkl", "rb") as f:
     vector_store = pickle.load(f) # load
 
 # Prompt

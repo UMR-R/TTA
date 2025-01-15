@@ -10,7 +10,7 @@ def filter_text(text):
     filtered_text = re.sub(r"[^\u4e00-\u9fffA-Za-z0-9\s.,!?;×~@^&%:()\[\]{}\"\'\-—]", "", text)
     return filtered_text.strip()
 
-loader = PyPDFLoader("./resources_/SoftEngineer.pdf")
+loader = PyPDFLoader("./_resources/docs/SoftEngineer.pdf")
 
 text_splitter = CharacterTextSplitter(separator = "\n\n", chunk_size = 600, chunk_overlap = 100, length_function = len)
 documents = loader.load_and_split(text_splitter)
@@ -22,5 +22,5 @@ for doc in documents:
 embeddings = HuggingFaceEmbeddings(model_name="GanymedeNil/text2vec-large-chinese")
 vector_store = FAISS.from_documents(documents, embeddings) # init
 
-with open("./resources_/SoftEngineer.pkl", "wb") as f:
+with open("./_resources/docs/SoftEngineer.pkl", "wb") as f:
     pickle.dump(vector_store, f) # store
