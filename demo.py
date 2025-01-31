@@ -28,10 +28,10 @@ class GenImg:
         "V3_0.safetensors",                             # 3, 国漫风格       url: https://civitai.com/models/1042699/v3
         "againmixsdxl_v4Lightning.safetensors",         # 4, 真人风格，SDXL url: https://civitai.com/models/233359/againmixsdxl?modelVersionId=1194141
     ]
-    prompt_pre = "masterpiece, best quality, 8k, nsanely detailed, ultra-detailed, highly detailed, unreal engine rendered, "
+    prompt_pre = "(masterpiece), (best quality), (ultra-detailed),"
     negative_prompt = "(bad quality,worst quality,low quality,bad anatomy,bad hand:1.3), nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name,"
 
-    def __init__(self, model, output_path, lora_model=None, lora_scale=1.0, gen_mode=(768, 512), up_scale=None, eta=0.5, img2img=None, up_scale_gpu=False):
+    def __init__(self, model, output_path, lora_model=None, lora_scale=1.0, gen_mode=(512, 512), up_scale=None, eta=0.5, img2img=None, up_scale_gpu=False):
         self.img2img = img2img
         if img2img != None:
             self.img = load_image(img2img)
@@ -40,14 +40,15 @@ class GenImg:
                 torch_dtype=torch.float16
             ).to("cuda")
         else:
-            self.pipe = StableDiffusionPipeline.from_single_file(
-                model,
+            self.pipe = StableDiffusionPipeline.from_pretrained(
+                r"D:\Struggle\TTI\SD\SD1-5",
                 torch_dtype=torch.float16
             ).to("cuda")
         self.pipe.scheduler = DDIMScheduler.from_config(self.pipe.scheduler.config)
+        self.pipe.load_textual_inversion("sd-concepts-library/gta5-artwork")
         if lora_model != None:
-            # self.pipe = LoraLoaderMixin.load_lora_weights(self.pipe, lora_model, lora_scale=lora_scale)
             self.pipe.load_lora_weights(lora_model, adapter_name="logo")
+            self.pipe.fuse_lora(lora_scale = 1.5)
             self.pipe.get_active_adapters()
         self.output_path = output_path
         self.generator = torch.Generator("cuda")
@@ -124,7 +125,7 @@ class GenImg:
         image.save(output_path)
 
 if __name__ == "__main__":
-    gen = GenImg("./models/boleromixPony_v170.safetensors", output_path="./outputs")
+    gen = GenImg("./models/zentypeexExperimental_exAW4.safetensors", output_path="./outputs", lora_model=r".\models\logo1.5v2.safetensors")
     prompt = input("prompt:\n")
     while prompt != "exit":
         gen.gen_one(prompt)
